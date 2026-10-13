@@ -1,5 +1,11 @@
 # Pipeline de previsão de inadimplência
 
+## Integrantes do grupo
+- Giulia Paura
+- Maria Vitória Soares
+- Valentina Ribeiro
+- Roberta Correa
+
 - `pipeline.pkl`: o objeto `pipe` (`sklearn.pipeline.Pipeline`) com `.predict` e `.predict_proba`.
 - `treinar_pipeline.py`: script que gera o `pipeline.pkl` a partir do CSV.
 

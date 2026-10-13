@@ -1,4 +1,6 @@
-"""Treina o pipeline de previsao de inadimplencia e salva em pipeline.pkl.
+"""Grupo: Giulia Paura, Maria Vitória Soares, Valentina Ribeiro, Roberta Correa
+
+Treina o pipeline de previsao de inadimplencia e salva em pipeline.pkl.
 
 Uso: python treinar_pipeline.py caminho/credit_risk_student_dataset.csv [--holdout]
 
