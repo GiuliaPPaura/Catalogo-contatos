@@ -13,7 +13,8 @@
 - AUC em holdout (30% dos dados, nunca vistos no ajuste): **0.936**
 - Testado carregando com `pickle.load` em scikit-learn 1.3 → 1.9 e numpy 1.26 / 2.x
   (o `.pkl` foi gerado com scikit-learn 1.3.2 + numpy 1.26.4 para máxima compatibilidade).
-- Aceita `X` com ou sem a coluna de índice (`Unnamed: 0`): as colunas são selecionadas pelo nome.
+- Aceita `X` como DataFrame ou array numpy, com ou sem a coluna de índice (`Unnamed: 0`):
+  as colunas são selecionadas pela posição contada a partir do final.
 
 ## Ideia
 As variáveis isoladas têm AUC ≈ 0.50 e até gradient boosting fica em ≈ 0.50. Analisando

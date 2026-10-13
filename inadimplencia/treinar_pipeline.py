@@ -14,7 +14,8 @@ Estrutura descoberta nos dados:
 
 Pipeline (apenas objetos padrao do sklearn/numpy, para que o pickle.load
 funcione sem precisar de nenhum codigo customizado):
-  1. selecao das 32 colunas pelo nome (ignora indice/colunas extras)
+  1. selecao das 32 colunas por posicao (funciona com DataFrame ou numpy,
+     com ou sem a coluna de indice)
   2. QuantileTransformer -> normal padrao
   3. combinacao linear por bloco (pesos otimizados por maxima verossimilhanca)
   4. tanh (versao suave do sinal) e produto entre os 8 fatores
@@ -22,8 +23,6 @@ funcione sem precisar de nenhum codigo customizado):
 """
 import pickle
 import sys
-from operator import itemgetter
-
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
@@ -45,6 +44,9 @@ GRUPOS = [
 ]
 COLUNAS = [c for g in GRUPOS for c in g]
 NG = len(GRUPOS)
+# Posicao das 32 colunas contada a partir do final (antes das 5 colunas de ruido):
+# vale para DataFrame ou array numpy, com ou sem a coluna de indice no inicio.
+POSICOES = list(range(-37, -5))
 
 
 def otimizar_pesos(Z, y):
@@ -70,7 +72,7 @@ def treinar(df):
     Z = quantis.fit_transform(df[COLUNAS].to_numpy())
     W = otimizar_pesos(Z, df["default"].to_numpy())
     pipe = Pipeline([
-        ("selecionar", FunctionTransformer(itemgetter(COLUNAS))),
+        ("selecionar", FunctionTransformer(np.take, kw_args={"indices": POSICOES, "axis": 1})),
         ("quantis", quantis),
         ("fatores", FunctionTransformer(np.dot, kw_args={"b": W})),
         ("tanh", FunctionTransformer(np.tanh)),
@@ -84,6 +86,7 @@ def treinar(df):
 
 if __name__ == "__main__":
     df = pd.read_csv(sys.argv[1], index_col=0)
+    assert list(df.drop(columns="default").columns[POSICOES]) == COLUNAS
     if "--holdout" in sys.argv:
         tr, te = train_test_split(df, test_size=0.3, random_state=1, stratify=df["default"])
         p = treinar(tr)
